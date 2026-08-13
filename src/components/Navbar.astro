@@ -1,0 +1,57 @@
+---
+
+---
+
+<nav id="navbar" class="navbar">
+    <a href="/">Home</a>
+    <a href="/photos">Photography</a>
+</nav>
+
+<style>
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 0;
+
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        background-color:darkslateblue;
+
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .navbar.hidden {
+        transform: translateY(-100%);
+    }
+    a {
+        color : white;
+        text-decoration: none;
+    }
+</style>
+
+<script>
+    let lastScrollY = window.scrollY;
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY && currentScrollY > 50){
+            navbar?.classList.add('hidden');
+        } else {
+            navbar?.classList.remove('hidden');
+        }
+
+        lastScrollY = currentScrollY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (e.clientY < 60) {
+            navbar?.classList.remove('hidden');
+        }
+    });
+
+</script>
