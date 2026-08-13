@@ -1,0 +1,124 @@
+---
+import BaseLayout from "../layouts/baseLayout.astro";
+import { Image } from "astro:assets";
+
+const imageFiles = import.meta.glob<{ default: ImageMetadata }>(
+    "../assets/photos/*.{jpeg,jpg,png,webp,JPEG,JPG,PNG,WEBP}",
+    { eager: true },
+);
+
+const photosList = Object.entries(imageFiles).map(([filePath, globObject]) => {
+    const img = globObject.default;
+    // Aspect ratio width at fixed 300px height
+    const renderedWidth = (img.width / img.height) * 300;
+
+    return {
+        src: img,
+        alt: filePath.split("/").pop()?.split(".")[0] || "Photography",
+        width: renderedWidth,
+    };
+});
+
+const shuffled = [...photosList].sort(() => Math.random() - 0.5);
+
+const middleIndex = Math.ceil(shuffled.length / 2);
+const row1 = shuffled.slice(0, middleIndex);
+const row2 = shuffled.slice(middleIndex);
+
+const row1Width = row1.reduce((sum, photo) => sum + photo.width + 10, 0);
+const row2Width = row2.reduce((sum, photo) => sum + photo.width + 10, 0);
+
+const SPEED = 60; 
+const duration1 = row1Width / SPEED;
+const duration2 = row2Width / SPEED;
+---
+
+<BaseLayout title="Photography">
+    <header class="page-header">
+        <h1>my photography</h1>
+    </header>
+
+    <section class="ticker-section">
+        
+        <!-- ROW 1 -->
+        <div class="ticker-track" style={`animation-duration: ${duration1}s;`}>
+            <div class="ticker-group">
+                {row1.map((photo) => (
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                ))}
+            </div>
+            <div class="ticker-group">
+                {row1.map((photo) => (
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                ))}
+            </div>
+        </div>
+
+        <!-- ROW 2 -->
+        <div class="ticker-track" style={`animation-duration: ${duration2}s;`}>
+            <div class="ticker-group">
+                {row2.map((photo) => (
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                ))}
+            </div>
+            <div class="ticker-group">
+                {row2.map((photo) => (
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                ))}
+            </div>
+        </div>
+
+    </section>
+</BaseLayout>
+
+
+<style>
+    .page-header {
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+
+    .ticker-section {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        background: #000;
+        padding: 1rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px; 
+    }
+
+    .ticker-track {
+        display: flex;
+        gap: 10px;
+        width: max-content;
+        animation: scroll linear infinite;
+        
+        /* Eliminates micro-stuttering by forcing GPU acceleration */
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    .ticker-track:hover {
+        animation-play-state: paused;
+    }
+
+    .ticker-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .scroll-img {
+        height: 300px;
+        width: auto;
+        object-fit: cover;
+        display: block;
+    }
+
+    @keyframes scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(calc(-50% - 5px)); }
+    }
+</style>
