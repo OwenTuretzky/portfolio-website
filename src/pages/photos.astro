@@ -1,55 +1,59 @@
 ---
 import BaseLayout from "../layouts/baseLayout.astro";
 import { Image } from "astro:assets";
+import { galleryPhotos } from "../data/photos";
 
 const imageFiles = import.meta.glob<{ default: ImageMetadata }>(
     "../assets/photos/*.{jpeg,jpg,png,webp,JPEG,JPG,PNG,WEBP}",
     { eager: true },
 );
 
-const photosList = Object.entries(imageFiles).map(([filePath, globObject]) => {
-    const img = globObject.default;
-    // Aspect ratio width at fixed 300px height
-    const renderedWidth = (img.width / img.height) * 300;
+const allPhotos = Object.entries(imageFiles).map(([filePath, globObject]) => ({
+    src: globObject.default,
+    alt: filePath.split("/").pop()?.split(".")[0] || "Photography",
+    filename: filePath.split("/").pop() || "",
+}));
 
-    return {
-        src: img,
-        alt: filePath.split("/").pop()?.split(".")[0] || "Photography",
-        width: renderedWidth,
-    };
-});
-
-const shuffled = [...photosList].sort(() => Math.random() - 0.5);
+const shuffled = [...allPhotos].sort(() => Math.random() - 0.5);
 
 const middleIndex = Math.ceil(shuffled.length / 2);
 const row1 = shuffled.slice(0, middleIndex);
 const row2 = shuffled.slice(middleIndex);
 
-const row1Width = row1.reduce((sum, photo) => sum + photo.width + 10, 0);
-const row2Width = row2.reduce((sum, photo) => sum + photo.width + 10, 0);
+const row1Width = row1.reduce((acc, p) => acc + (p.src.width / p.src.height) * 300 + 10, 0);
+const row2Width = row2.reduce((acc, p) => acc + (p.src.width / p.src.height) * 300 + 10, 0);
 
 const SPEED = 60; 
 const duration1 = row1Width / SPEED;
 const duration2 = row2Width / SPEED;
+
+const detailedGallery = galleryPhotos.map((meta) => {
+    const matched = allPhotos.find((p) => p.filename.toLowerCase() === meta.filename.toLowerCase());
+    return {
+        ...meta,
+        imgSrc: matched?.src,
+    };
+}).filter((item) => item.imgSrc !== undefined);
 ---
 
 <BaseLayout title="Photography">
     <header class="page-header">
-        <h1>my photography</h1>
+        <h1>My Photography</h1>
     </header>
 
+    <!--TOP TICKER -->
     <section class="ticker-section">
         
         <!-- ROW 1 -->
         <div class="ticker-track" style={`animation-duration: ${duration1}s;`}>
             <div class="ticker-group">
                 {row1.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
                 ))}
             </div>
             <div class="ticker-group">
                 {row1.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
                 ))}
             </div>
         </div>
@@ -58,16 +62,75 @@ const duration2 = row2Width / SPEED;
         <div class="ticker-track" style={`animation-duration: ${duration2}s;`}>
             <div class="ticker-group">
                 {row2.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
                 ))}
             </div>
             <div class="ticker-group">
                 {row2.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" class="scroll-img" />
+                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
                 ))}
             </div>
         </div>
+    
+    </section>
+    <!--MAIN GALLERY -->
+    <section class="main-gallery">
+        <div class="gallery-container">
+            {detailedGallery.map((photo) => (
+                <article class="gallery-row">
 
+                    <div class="photo-col">
+                        <Image 
+                            src={photo.imgSrc!} 
+                            alt={photo.title || 'Photo taken with {photo.camera}'} 
+                            width={1200}
+                            quality="high"
+                            loading="eager"
+                            class="main-photo" 
+                        />
+                    </div>
+
+                    <div class="info-col">
+                        <div class="info-header">
+                            <h2>{photo.title}</h2>
+                            {photo.location && <p class="location">{photo.location}</p>}
+                            {photo.date && <p class="date">{photo.date}</p>}
+                        </div>
+
+                        <div class="exif-grid">
+                            <div class="exif-item">
+                                <span class="label">Camera</span>
+                                <span class="val">{photo.camera}</span>
+                            </div>
+                            <div class="exif-item">
+                                <span class="label">Lens</span>
+                                <span class="val">{photo.lens}</span>
+                            </div>
+                            <div class="exif-item">
+                                <span class="label">Focal Length</span>
+                                <span class="val">{photo.focalLength}</span>
+                            </div>
+                            <div class="exif-item">
+                                <span class="label">Aperture</span>
+                                <span class="val">{photo.aperture}</span>
+                            </div>
+                            <div class="exif-item">
+                                <span class="label">Shutter Speed</span>
+                                <span class="val">{photo.shutter}</span>
+                            </div>
+                            <div class="exif-item">
+                                <span class="label">ISO</span>
+                                <span class="val">{photo.iso}</span>
+                            </div>
+                        </div>
+
+                        {photo.notes && (
+                            <p class="notes">{photo.notes}</p>
+                        )}
+                    </div>
+                </article>
+            ))}
+        </div>
     </section>
 </BaseLayout>
 
@@ -78,6 +141,8 @@ const duration2 = row2Width / SPEED;
         padding: 2rem 1rem;
     }
 
+
+    /* top ticker style stuff */
     .ticker-section {
         width: 100%;
         max-width: 100vw;
@@ -121,4 +186,121 @@ const duration2 = row2Width / SPEED;
         0% { transform: translateX(0); }
         100% { transform: translateX(calc(-50% - 5px)); }
     }
+
+    /* main gallery style stuff */
+    .main-gallery {
+        padding: 4rem 1.5rem;
+    }
+
+    .gallery-container {
+        max-width: 1900px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 5rem;
+    }
+
+    .gallery-row {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr; /* Photo takes ~60%, Info takes ~40% */
+        gap: 7rem;
+        align-items: center;
+        padding-bottom: 4rem;
+    }
+
+    /* Photo Styling */
+    .photo-col {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .main-photo {
+        width: 100%;
+        height: auto;
+        max-height: 80vh;
+        object-fit: contain;
+        display: block;
+        padding: 5%;
+        background: #272727;
+        box-sizing: border-box
+    }
+
+    /* info column stuff */
+    .info-col {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .info-header h2 {
+        font-size: 1.8rem;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        margin: 0 0 0.25rem 0;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+    }
+
+    .location {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        color: #888;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+
+    .date {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        color: #555;
+        font-size: 0.85rem;
+        margin: 0.2rem 0 0 0;
+    }
+
+    /* EXIF data */
+    .exif-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1rem 1.5rem;
+        padding: 1.25rem;
+
+    }
+
+    .exif-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .exif-item .label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #666;
+    }
+
+    .exif-item .val {
+        font-size: 0.95rem;
+        font-weight: 500;
+        font-family: monospace;
+    }
+
+    .notes {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #aaa;
+        border-left: 2px solid #333;
+        padding-left: 1rem;
+        margin: 0;
+    }
+
+    @media (max-width: 850px) {
+        .gallery-row {
+            grid-template-columns: 1fr; /* Stacks image on top of info */
+            gap: 1.5rem;
+        }
+
+        .exif-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
 </style>

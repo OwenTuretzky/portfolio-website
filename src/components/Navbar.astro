@@ -13,7 +13,7 @@
         top: 0;
         left: 0;
         right: 0;
-        z-index: 0;
+        z-index: 1000;
 
         display: flex;
         gap: 1rem;
@@ -29,6 +29,11 @@
     a {
         color : white;
         text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    a:hover{
+        color: #c9c9c9
     }
 </style>
 

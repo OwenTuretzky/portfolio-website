@@ -1,0 +1,102 @@
+---
+const currentYear = new Date().getFullYear();
+---
+<footer class="site-footer">
+    <div class="footer-container">
+        <p>&copy; {currentYear} Owen Turetzky. All rights reserved.</p>
+
+        <div class="footer-links">
+            <a href="https://www.instagram.com/owenturetzky" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://github.com/OwenTuretzky" target="_blank" rel="noopener noreferrer">Github</a>
+            <a href="mailto:owen@turetzky.org">Contact</a>
+        </div>
+
+        <button id="back-to-top" class="back-to-top-btn">
+            <span>Back to top</span>
+        </button>
+    </div>
+</footer>
+
+<script>
+  const backToTopBtn = document.getElementById('back-to-top');
+
+  backToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+</script>
+
+<style>
+    .site-footer {
+        background: darkslateblue;
+        padding: 2.5rem 1.5rem;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .site-footer p{
+        color: white;
+    }
+
+    .footer-links {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .footer-links a {
+        color: #ffffff;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+        color: #c9c9c9;
+    }
+
+    .back-to-top-btn {
+        font-family: inherit;
+        font-size: inherit;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: darkslateblue;
+        padding: 15px;
+        border: none;
+    }
+
+    .back-to-top-btn:hover {
+        background-color: rgb(60, 53, 109);
+    }
+
+    /* Mobile Responsive Stacking */
+    @media (max-width: 650px) {
+        .footer-container {
+        flex-direction: column;
+        text-align: center;
+        }
+
+        .footer-left {
+        order: 3;
+        }
+
+        .social-links {
+        order: 1;
+        }
+
+        .back-to-top-btn {
+        order: 2;
+        }
+    }
+
+</style>
+

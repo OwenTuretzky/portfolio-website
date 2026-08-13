@@ -1,6 +1,6 @@
 ---
 import Navbar from '../components/Navbar.astro';
-
+import Footer from '../components/Footer.astro';
 const {title = "Default Title"} = Astro.props;
 ---
 
@@ -17,11 +17,26 @@ const {title = "Default Title"} = Astro.props;
             <slot />
         </main>
 
+        <Footer />
     </body>    
-</html>"
+</html>
 
 <style>
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
     main {
-        padding-top: 4rem;
+        flex: 1;
+        padding-top: 4rem; 
     }
 </style>
