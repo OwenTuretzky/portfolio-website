@@ -1,8 +1,95 @@
 ---
 import BaseLayout from '../layouts/baseLayout.astro';
-return Astro.redirect('/photos');
 ---
 
 <BaseLayout title="Home Page">
-	<h1>test header</h1>
+	<div class="main-container">
+		<a href="/projects" class="widget">
+			<h2>Projects</h2>
+			<p>Computer science projects, education, and my resume</p>
+		</a>
+
+		<div class="profile-center">
+			<img src="/portrait.jpg" alt="My Portrait" class="avatar" />
+			<h1>Owen Turetzky</h1>
+			<p class="micro-bio">Computer science student and amateur photographer</p>
+		</div>
+
+		<a href="/photos" class="widget">
+			<h2>Photography</h2>
+			<p>A gallery of my photos</p>
+		</a>
+	</div>
 </BaseLayout>
+
+<style>
+	.main-container {
+		display: grid;
+		grid-template-columns: 1fr 350px 1fr;
+		gap: 10rem;
+		align-items: center;
+		min-height: 75vh;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
+
+	.profile-center {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.avatar {
+		width: 180px;
+		height: 180px;
+		border-radius: 50%;
+		object-fit: cover;
+		margin-bottom: 1.5rem;
+		border: 4px solid #272727;
+	}
+
+	.profile-center h1{
+		font-family: Verdana, Geneva, Tahoma, sans-serif;
+		font-size: 2rem;
+	}
+
+	.widget {
+		padding: 2.5rem 2rem;
+		text-decoration: none;
+		text-align: center;
+		border-radius: 8px
+	}
+
+	.widget:hover {
+		background: #c9c9c9
+	}
+
+	.widget h2 {
+		font-size: 2.5rem;
+		font-family: Verdana, Geneva, Tahoma, sans-serif;
+		margin-bottom: 1rem;
+		color: #272727;
+	}
+
+	.widget p{
+		margin: 0;
+		font-family: Verdana, Geneva, Tahoma, sans-serif;
+		color: #888;
+		line-height: 1.4;
+	}
+
+	@media (max-width: 800px) {
+    .main-container {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .profile-center {
+      order: -1; 
+      margin-bottom: 2rem;
+    }
+  }
+
+</style>

@@ -138,6 +138,7 @@ const detailedGallery = galleryPhotos.map((meta) => {
 <style>
     .page-header {
         text-align: center;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
         padding: 2rem 1rem;
     }
 
@@ -147,7 +148,7 @@ const detailedGallery = galleryPhotos.map((meta) => {
         width: 100%;
         max-width: 100vw;
         overflow-x: hidden;
-        background: #000;
+        background: #272727;
         padding: 1rem 0;
         display: flex;
         flex-direction: column;
@@ -160,7 +161,6 @@ const detailedGallery = galleryPhotos.map((meta) => {
         width: max-content;
         animation: scroll linear infinite;
         
-        /* Eliminates micro-stuttering by forcing GPU acceleration */
         will-change: transform;
         transform: translateZ(0);
         backface-visibility: hidden;
@@ -250,7 +250,7 @@ const detailedGallery = galleryPhotos.map((meta) => {
 
     .date {
         font-family: Verdana, Geneva, Tahoma, sans-serif;
-        color: #555;
+        color: #272727;
         font-size: 0.85rem;
         margin: 0.2rem 0 0 0;
     }
