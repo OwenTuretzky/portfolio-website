@@ -1,30 +1,67 @@
 ---
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
-const {title = "Default Title"} = Astro.props;
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+const {
+    title = "My Portfolio",
+    description = "Computer Science Student and Amateur Photographer",
+    image = "/portrait.jpg",
+} = Astro.props;
+const currentUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
         <link rel="icon" type="image/png" href="/favicon.png" />
         <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={currentUrl} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={currentUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={new URL(image, Astro.site)} />
+
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "ProfilePage",
+                "mainEntity": {
+                    "@type": "Person",
+                    "name": "Owen Turetzky",
+                    "url": "https://owen.turetzky.org",
+                    "image": "https://owen.turetzky.org/portrait.jpg",
+                    "description": "Computer Science Student and Amateur Photographer.",
+                    "alumniOf": {
+                        "@type": "EducationalOrganization",
+                        "name": "University of Puget Sound"
+                    },
+                    "sameAs": [
+                        "https://github.com/OwenTuretzky",
+                        "https://www.instagram.com/owenturetzky",
+                        "https://www.linkedin.com/in/owen-turetzky-6681a3385/"
+                    ]
+                }
+            }
+        </script>
     </head>
     <body>
         <Navbar />
 
-        <main>  
+        <main>
             <slot />
         </main>
 
         <Footer />
-    </body>    
+    </body>
 </html>
 
 <style>
-
-    html, body {
+    html,
+    body {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -38,6 +75,6 @@ const {title = "Default Title"} = Astro.props;
 
     main {
         flex: 1;
-        padding-top: 4rem; 
+        padding-top: 4rem;
     }
 </style>

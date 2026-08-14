@@ -1,5 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
-export default defineConfig({site: 'http://owen.turetzky.org'});
+export default defineConfig({
+    site: 'https://owen.turetzky.org',
+    prefetch: true,
+    integrations: [sitemap()],
+});

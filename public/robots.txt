@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://owen.turetzky.org/sitemap-index.xml
