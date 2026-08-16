@@ -1,120 +1,101 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 ---
 
-<div id="nav-hover-trigger"/>
-
-<header id="site-header">
-    <div id="site-name">Owen Turetzky</div>
-    <div id="nav-wrapper">
-        <nav id="navbar-links">
-            <a href="/">Home</a>
-            <a href="/projects">Projects</a>
-            <a href="/photos">Photography</a>
-        </nav>
-    </div>
+<header id="site-header" class="site-header">
+    <div class="site-name">Owen Turetzky</div>
 </header>
 
+<div id="nav-sentinel"></div>
+<div id="nav-wrapper" class="nav-wrapper">
+    <nav id="navbar" class="navbar">
+        <a href="/">Home</a>
+        <a href="/projects">Projects</a>
+        <a href="/photos">Photography</a>
+    </nav>
+</div>
+
 <style>
-    #nav-hover-trigger {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 40px;
-        z-index: 1001;
+    .site-header {
+        display: flex;
+        justify-content: center;
+        padding: 2.5rem 0 3.5rem;
+        background-color: darkslateblue;
     }
 
-    #site-header {
-        background: darkslateblue;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-top: 2.5rem;
-    }
-    
-    #site-name {
+    .site-name {
         font-size: 2.2rem;
         font-family: CustomSans, sans-serif;
         font-weight: bold;
         color: #fff;
-        margin-bottom: 3.5rem;
     }
 
-    #nav-wrapper {
-        width: 100%;
-        height: 3.1rem;
+    #nav-sentinel {
+        height: 0px;
     }
 
-    #navbar-links {
+    .nav-wrapper {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .navbar {
         width: 100%;
         display: flex;
         justify-content: center;
-        gap: 2rem;
-        padding: 0.8rem 0 1.2rem 0;
-        background: darkslateblue;
+        gap: 2.5rem;
+        padding: max(0.8rem, env(safe-area-inset-top)) 0 1.2rem;
+        background-color: darkslateblue;
         box-sizing: border-box;
-        z-index: 1000;
+        transition: transform 0.3s ease-in-out;
     }
 
-    #navbar-links a {
-        color: #ffffff;
+    .navbar a {
+        color: #fff;
         text-decoration: none;
-        font-family: CustomSans;
+        font-family: CustomSans, sans-serif;
         font-size: 1.1rem;
         transition: color 0.2s ease;
     }
 
-    #navbar-links a:hover {
+    .navbar a:hover {
         color: #c9c9c9;
     }
 
-    #navbar-links.is-floating {
-        position: fixed;
-        top: 0; left: 0;
+    .navbar.hidden {
         transform: translateY(-100%);
-        transition: transform 0.25s ease;
     }
-
-    /* Slides in when scrolling up or hovering */
-    #navbar-links.is-floating.is-visible {
-        transform: translateY(0);
-    }
-
 </style>
 
 <script>
-    let lastY = window.scrollY;
-    const nav = document.getElementById('navbar-links');
-    const wrapper = document.getElementById('nav-wrapper');
-    const trig = document.getElementById('nav-hover-trigger');
+    function initNav() {
+        const sentinel = document.getElementById("nav-sentinel");
+        const navbar = document.getElementById("navbar");
+        if (!sentinel || !navbar) return;
 
-    window.addEventListener('scroll', () => {
-        if (!nav || !wrapper) return;
-        const y = window.scrollY;
-        const isScrollingUp = y < lastY;
-        
-        // Pixel-exact threshold: transition only when the nav hits the top edge
-        const threshold = wrapper.offsetTop;
+        let lastScrollY = window.scrollY;
+        let stuck = false;
 
-        if (y > threshold) {
-            nav.classList.add('is-floating');
-            nav.classList.toggle('is-visible', isScrollingUp);
-        } else {
-            nav.classList.remove('is-floating', 'is-visible');
-        }
-        lastY = y;
-    }, { passive: true });
+        // Fires exactly when the nav transitions between inline and stuck.
+        const observer = new IntersectionObserver(([entry]) => {
+            stuck = !entry.isIntersecting;
+            if (!stuck) navbar.classList.remove("hidden");
+        });
+        observer.observe(sentinel);
 
-    trig?.addEventListener('mouseenter', () => {
-        if (wrapper && window.scrollY > wrapper.offsetTop) {
-            nav?.classList.add('is-visible');
-        }
-    });
+        window.addEventListener("scroll", () => {
+            const y = window.scrollY;
+            if (stuck) navbar.classList.toggle("hidden", y > lastScrollY);
+            lastScrollY = y;
+        }, { passive: true });
 
-    nav?.addEventListener('mouseleave', () => {
-        if (wrapper && window.scrollY > wrapper.offsetTop) {
-            nav?.classList.remove('is-visible');
-        }
-    });
+        window.addEventListener("mousemove", (e) => {
+            if (stuck && e.clientY < 60) navbar.classList.remove("hidden");
+        });
+    }
+
+    initNav();
+    document.addEventListener("astro:after-swap", initNav);
 </script>
