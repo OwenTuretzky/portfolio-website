@@ -32,6 +32,7 @@ export const galleryPhotos: PhotoData[] = [
     
     {
         filename: "duck-bathing.JPG",
+        title: "Duck Bathing",
         location: "Kobe Animal Kingdom",
         date: "June, 2026",
         camera: "Canon EOS 5D Mark IV",
@@ -44,6 +45,7 @@ export const galleryPhotos: PhotoData[] = [
 
     {
         filename: "sleeping-otter.JPG",
+        title: "Naptime",
         location: "Kobe Animal Kingdom",
         date: "June, 2026",
         camera: "Canon EOS 5D Mark IV",
@@ -55,7 +57,21 @@ export const galleryPhotos: PhotoData[] = [
     },
 
     {
+        filename: "pink-hydrangea.JPG",
+        title: "Pink Hydrangea",
+        location: "Katsuo-ji Temple",
+        date: "June, 2026",
+        camera: "Canon EOS 5D Mark IV",
+        lens: "Canon EF 24-105mm F4 L IS USM",
+        focalLength: "70mm",
+        aperture: "f/4",
+        shutter: "1/1250s",
+        iso: "400",
+    },
+
+    {
         filename: "katsuoji-daruma-hydrangea.JPG",
+        title: "Daruma",
         location: "Katsuo-ji Temple",
         date: "June, 2026",
         camera: "Canon EOS 5D Mark IV",
@@ -68,6 +84,7 @@ export const galleryPhotos: PhotoData[] = [
 
     {
         filename: "battery-spencer-portrait.jpeg",
+        title: "Battery Spencer Overlook",
         location: "Battery Spencer Overlook",
         date: "August, 2026",
         camera: "Canon EOS 5D Mark IV",
