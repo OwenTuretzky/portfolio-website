@@ -26,7 +26,7 @@ npm run dev
 ```
 
 ## LLM Use
-LLMs such as Google Gemini and Anthropic's Claude were used to assist in the writing of this website at times.
+LLMs such as Google Gemini and Anthropic's Claude were used to assist in the writing of this website at times. All creative and aesthetic decisions are my own, and no code was used if feel I do not fully understand what it does and why it is used.
 
 ## Photos & Copyright
 All photography is copyrighted. Please do not use images without permission.
