@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 ---
-
+<div id="top-status-bar" />
 <div id="nav-hover-trigger"/>
 
 <header id="site-header">
@@ -16,6 +16,18 @@ import '../styles/global.css';
 </header>
 
 <style>
+
+    #top-status-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: env(safe-area-inset-top, 0px);
+        background: darkslateblue;
+        z-index: 1002;
+        pointer-events: none;
+    }
+
     #nav-hover-trigger {
         position: fixed;
         top: 0;
@@ -30,7 +42,8 @@ import '../styles/global.css';
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding-top: 2.5rem;
+        padding-top: calc(2.5rem + env(safe-area-inset-top, 0px));
+        width: 100%;
     }
     
     #site-name {
@@ -71,7 +84,8 @@ import '../styles/global.css';
 
     #navbar-links.is-floating {
         position: fixed;
-        top: 0; left: 0;
+        top: 0; 
+        left: 0;
         padding-top: calc(0.8rem + env(safe-area-inset-top, 0px));
         transform: translateY(-100%);
         transition: transform 0.25s ease;
@@ -94,7 +108,6 @@ import '../styles/global.css';
         const y = window.scrollY;
         const isScrollingUp = y < lastY;
         
-        // Pixel-exact threshold: transition only when the nav hits the top edge
         const threshold = wrapper.offsetTop;
 
         if (y > threshold) {
