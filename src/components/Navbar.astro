@@ -72,11 +72,11 @@ import '../styles/global.css';
     #navbar-links.is-floating {
         position: fixed;
         top: 0; left: 0;
+        padding-top: calc(0.8rem + env(safe-area-inset-top, 0px));
         transform: translateY(-100%);
         transition: transform 0.25s ease;
     }
 
-    /* Slides in when scrolling up or hovering */
     #navbar-links.is-floating.is-visible {
         transform: translateY(0);
     }
