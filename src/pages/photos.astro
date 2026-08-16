@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/baseLayout.astro";
-import '../styles/global.css';
-import { Image } from "astro:assets";
+import "../styles/global.css";
+import { Image, getImage } from "astro:assets";
 import { galleryPhotos } from "../data/photos";
 
 const imageFiles = import.meta.glob<{ default: ImageMetadata }>(
@@ -9,11 +9,35 @@ const imageFiles = import.meta.glob<{ default: ImageMetadata }>(
     { eager: true },
 );
 
-const allPhotos = Object.entries(imageFiles).map(([filePath, globObject]) => ({
-    src: globObject.default,
-    alt: filePath.split("/").pop()?.split(".")[0] || "Photography",
-    filename: filePath.split("/").pop() || "",
-}));
+const allPhotos = await Promise.all(
+    Object.entries(imageFiles).map(async ([filePath, globObject]) => {
+        const rawSrc = globObject.default;
+
+        // Optimized Lightbox (2000px WebP)
+        const optimizedLightbox = await getImage({
+            src: rawSrc,
+            width: 2000,
+            format: "webp",
+            quality: 85,
+        });
+
+        // Dedicated Ticker Image (Small, lightweight WebP)
+        const optimizedTicker = await getImage({
+            src: rawSrc,
+            height: 300,
+            format: "webp",
+            quality: 70,
+        });
+
+        return {
+            src: rawSrc,
+            tickerSrc: optimizedTicker.src,
+            lightboxSrc: optimizedLightbox.src,
+            alt: filePath.split("/").pop()?.split(".")[0] || "Photography",
+            filename: filePath.split("/").pop() || "",
+        };
+    }),
+);
 
 const shuffled = [...allPhotos].sort(() => Math.random() - 0.5);
 
@@ -21,124 +45,229 @@ const middleIndex = Math.ceil(shuffled.length / 2);
 const row1 = shuffled.slice(0, middleIndex);
 const row2 = shuffled.slice(middleIndex);
 
-const row1Width = row1.reduce((acc, p) => acc + (p.src.width / p.src.height) * 300 + 10, 0);
-const row2Width = row2.reduce((acc, p) => acc + (p.src.width / p.src.height) * 300 + 10, 0);
+const row1Width = row1.reduce(
+    (acc, p) => acc + (p.src.width / p.src.height) * 300 + 10,
+    0,
+);
+const row2Width = row2.reduce(
+    (acc, p) => acc + (p.src.width / p.src.height) * 300 + 10,
+    0,
+);
 
-const SPEED = 60; 
+const SPEED = 60;
 const duration1 = row1Width / SPEED;
 const duration2 = row2Width / SPEED;
 
-const detailedGallery = galleryPhotos.map((meta) => {
-    const matched = allPhotos.find((p) => p.filename.toLowerCase() === meta.filename.toLowerCase());
-    return {
-        ...meta,
-        imgSrc: matched?.src,
-    };
-}).filter((item) => item.imgSrc !== undefined);
+const detailedGallery = galleryPhotos
+    .map((meta) => {
+        const matched = allPhotos.find(
+            (p) => p.filename.toLowerCase() === meta.filename.toLowerCase(),
+        );
+        return {
+            ...meta,
+            imgSrc: matched?.src,
+            lightboxSrc: matched?.lightboxSrc, // Add this line
+        };
+    })
+    .filter((item) => item.imgSrc !== undefined);
 ---
 
 <BaseLayout
-	title="Photography | Owen Turetzky"
-	description="A gallery showcasing my photography."
+    title="Photography | Owen Turetzky"
+    description="A gallery showcasing my photography."
 >
-
     <header class="page-header">
         <h1>My Photography</h1>
     </header>
 
     <!--TOP TICKER -->
     <section class="ticker-section">
-        
         <!-- ROW 1 -->
         <div class="ticker-track" style={`animation-duration: ${duration1}s;`}>
             <div class="ticker-group">
-                {row1.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
-                ))}
+                {
+                    row1.map((photo) => (
+                        <img
+                            src={photo.tickerSrc}
+                            alt={photo.alt}
+                            height="300"
+                            loading="eager"
+                            decoding="async"
+                            class="scroll-img lightbox-img"
+                            data-lightbox-key={photo.filename.toLowerCase()}
+                            data-full-src={photo.lightboxSrc}
+                            tabindex="0"
+                            role="button"
+                        />
+                    ))
+                }
             </div>
             <div class="ticker-group">
-                {row1.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
-                ))}
+                {
+                    row1.map((photo) => (
+                        <img
+                            src={photo.tickerSrc}
+                            alt=""
+                            height="300"
+                            loading="lazy"
+                            decoding="async"
+                            class="scroll-img lightbox-img"
+                            data-lightbox-key={photo.filename.toLowerCase()}
+                            data-full-src={photo.lightboxSrc}
+                            tabindex="-1"
+                        />
+                    ))
+                }
             </div>
         </div>
 
         <!-- ROW 2 -->
         <div class="ticker-track" style={`animation-duration: ${duration2}s;`}>
             <div class="ticker-group">
-                {row2.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
-                ))}
+                {
+                    row2.map((photo) => (
+                        <img
+                            src={photo.tickerSrc}
+                            alt={photo.alt}
+                            height="300"
+                            loading="eager"
+                            decoding="async"
+                            class="scroll-img lightbox-img"
+                            data-lightbox-key={photo.filename.toLowerCase()}
+                            data-full-src={photo.lightboxSrc}
+                            tabindex="0"
+                            role="button"
+                        />
+                    ))
+                }
             </div>
             <div class="ticker-group">
-                {row2.map((photo) => (
-                    <Image src={photo.src} alt={photo.alt} height={300} quality="high" loading="eager" class="scroll-img" />
-                ))}
+                {
+                    row2.map((photo) => (
+                        <img
+                            src={photo.tickerSrc}
+                            alt=""
+                            height="300"
+                            loading="lazy"
+                            decoding="async"
+                            class="scroll-img lightbox-img"
+                            data-lightbox-key={photo.filename.toLowerCase()}
+                            data-full-src={photo.lightboxSrc}
+                            tabindex="-1"
+                        />
+                    ))
+                }
             </div>
         </div>
-    
     </section>
     <!--MAIN GALLERY -->
     <section class="main-gallery">
         <div class="gallery-container">
-            {detailedGallery.map((photo) => (
-                <article class="gallery-row">
-
-                    <div class="photo-col">
-                        <Image 
-                            src={photo.imgSrc!} 
-                            alt={`${photo.title || 'Photograph'} by Owen Turetzky`}
-                            width={1200}
-                            quality="high"
-                            loading="eager"
-                            class="main-photo" 
-                        />
-                    </div>
-
-                    <div class="info-col">
-                        <div class="info-header">
-                            <h2>{photo.title}</h2>
-                            {photo.location && <p class="location">{photo.location}</p>}
-                            {photo.date && <p class="date">{photo.date}</p>}
+            {
+                detailedGallery.map((photo, index) => (
+                    <article class="gallery-row">
+                        <div class="photo-col">
+                            <Image
+                                src={photo.imgSrc!}
+                                alt={`${photo.title || "Photograph"} by Owen Turetzky`}
+                                width={1200}
+                                quality="high"
+                                loading={index < 2 ? "eager" : "lazy"}
+                                class="main-photo lightbox-img"
+                                data-lightbox-key={photo.filename.toLowerCase()}
+                                data-full-src={photo.lightboxSrc}
+                                data-title={photo.title}
+                                data-location={photo.location}
+                                data-date={photo.date}
+                                data-camera={photo.camera}
+                                data-lens={photo.lens}
+                                data-focal-length={photo.focalLength}
+                                data-aperture={photo.aperture}
+                                data-shutter={photo.shutter}
+                                data-iso={photo.iso}
+                                data-notes={photo.notes}
+                                tabindex="0"
+                                role="button"
+                            />
                         </div>
 
-                        <div class="exif-grid">
-                            <div class="exif-item">
-                                <span class="label">Camera</span>
-                                <span class="val">{photo.camera}</span>
+                        <div class="info-col">
+                            <div class="info-header">
+                                <h2>{photo.title}</h2>
+                                {photo.location && (
+                                    <p class="location">{photo.location}</p>
+                                )}
+                                {photo.date && <p class="date">{photo.date}</p>}
                             </div>
-                            <div class="exif-item">
-                                <span class="label">Lens</span>
-                                <span class="val">{photo.lens}</span>
-                            </div>
-                            <div class="exif-item">
-                                <span class="label">Focal Length</span>
-                                <span class="val">{photo.focalLength}</span>
-                            </div>
-                            <div class="exif-item">
-                                <span class="label">Aperture</span>
-                                <span class="val">{photo.aperture}</span>
-                            </div>
-                            <div class="exif-item">
-                                <span class="label">Shutter Speed</span>
-                                <span class="val">{photo.shutter}</span>
-                            </div>
-                            <div class="exif-item">
-                                <span class="label">ISO</span>
-                                <span class="val">{photo.iso}</span>
-                            </div>
-                        </div>
 
-                        {photo.notes && (
-                            <p class="notes">{photo.notes}</p>
-                        )}
-                    </div>
-                </article>
-            ))}
+                            <div class="exif-grid">
+                                <div class="exif-item">
+                                    <span class="label">Camera</span>
+                                    <span class="val">{photo.camera}</span>
+                                </div>
+                                <div class="exif-item">
+                                    <span class="label">Lens</span>
+                                    <span class="val">{photo.lens}</span>
+                                </div>
+                                <div class="exif-item">
+                                    <span class="label">Focal Length</span>
+                                    <span class="val">{photo.focalLength}</span>
+                                </div>
+                                <div class="exif-item">
+                                    <span class="label">Aperture</span>
+                                    <span class="val">{photo.aperture}</span>
+                                </div>
+                                <div class="exif-item">
+                                    <span class="label">Shutter Speed</span>
+                                    <span class="val">{photo.shutter}</span>
+                                </div>
+                                <div class="exif-item">
+                                    <span class="label">ISO</span>
+                                    <span class="val">{photo.iso}</span>
+                                </div>
+                            </div>
+
+                            {photo.notes && <p class="notes">{photo.notes}</p>}
+                        </div>
+                    </article>
+                ))
+            }
         </div>
     </section>
-</BaseLayout>
 
+    <div
+        id="lightbox-overlay"
+        class="lightbox-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Photo viewer"
+    >
+        <button
+            id="lightbox-close"
+            class="lightbox-btn lightbox-close"
+            aria-label="Close">&times;</button
+        >
+        <button
+            id="lightbox-prev"
+            class="lightbox-btn lightbox-prev"
+            aria-label="Previous photo">&#8249;</button
+        >
+        <button
+            id="lightbox-next"
+            class="lightbox-btn lightbox-next"
+            aria-label="Next photo">&#8250;</button
+        >
+        <div class="lightbox-content">
+            <img id="lightbox-image" class="lightbox-image" alt="" />
+            <div id="lightbox-caption" class="lightbox-caption" hidden>
+                <h3 id="lightbox-title"></h3>
+                <p id="lightbox-location" class="lb-meta" hidden></p>
+                <p id="lightbox-exif" class="lb-meta lb-exif" hidden></p>
+                <p id="lightbox-notes" class="lb-notes" hidden></p>
+            </div>
+        </div>
+    </div>
+</BaseLayout>
 
 <style>
     .page-header {
@@ -149,7 +278,6 @@ const detailedGallery = galleryPhotos.map((meta) => {
         padding: 2rem 1rem;
     }
 
-
     /* top ticker style stuff */
     .ticker-section {
         width: 100%;
@@ -159,7 +287,8 @@ const detailedGallery = galleryPhotos.map((meta) => {
         padding: 1rem 0;
         display: flex;
         flex-direction: column;
-        gap: 10px; 
+        gap: 10px;
+        contain: layout style paint;
     }
 
     .ticker-track {
@@ -167,7 +296,7 @@ const detailedGallery = galleryPhotos.map((meta) => {
         gap: 10px;
         width: max-content;
         animation: scroll linear infinite;
-        
+
         will-change: transform;
         transform: translateZ(0);
         backface-visibility: hidden;
@@ -180,6 +309,8 @@ const detailedGallery = galleryPhotos.map((meta) => {
     .ticker-group {
         display: flex;
         gap: 10px;
+        will-change: transform;
+        transform: translateZ(0);
     }
 
     .scroll-img {
@@ -190,8 +321,12 @@ const detailedGallery = galleryPhotos.map((meta) => {
     }
 
     @keyframes scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-50% - 5px)); }
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-50% - 5px));
+        }
     }
 
     /* main gallery style stuff */
@@ -230,7 +365,7 @@ const detailedGallery = galleryPhotos.map((meta) => {
         display: block;
         padding: 5%;
         background: #272727;
-        box-sizing: border-box
+        box-sizing: border-box;
     }
 
     /* info column stuff */
@@ -269,7 +404,6 @@ const detailedGallery = galleryPhotos.map((meta) => {
         grid-template-columns: repeat(1, 1fr);
         gap: 1rem 1.5rem;
         padding: 1.25rem;
-
     }
 
     .exif-item {
@@ -314,4 +448,309 @@ const detailedGallery = galleryPhotos.map((meta) => {
         }
     }
 
+    .lightbox-img {
+        cursor: zoom-in;
+    }
+
+    .lightbox-img:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+    }
+
+    .lightbox-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.92);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease;
+    }
+
+    .lightbox-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .lightbox-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 90vw;
+        max-height: 90vh;
+    }
+
+    .lightbox-image {
+        display: block;
+        max-width: 100%;
+        max-height: 78vh;
+        object-fit: contain;
+    }
+
+    .lightbox-image.is-loading {
+        opacity: 0;
+    }
+
+    .lightbox-caption {
+        color: #fff;
+        text-align: center;
+        max-width: 60ch;
+        margin-top: 1.25rem;
+        font-family: CustomSans, sans-serif;
+    }
+
+    .lightbox-caption h3 {
+        margin: 0 0 0.25rem;
+        font-size: 1.2rem;
+    }
+
+    .lb-meta {
+        margin: 0.15rem 0 0;
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+
+    .lb-exif {
+        font-family: monospace;
+        color: #888;
+    }
+
+    .lb-notes {
+        margin: 0.75rem 0 0;
+        color: #ccc;
+        font-family: CustomSerif;
+        font-size: 0.9rem;
+    }
+
+    .lightbox-btn {
+        position: fixed;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        z-index: 2001;
+        line-height: 1;
+    }
+
+    .lightbox-close {
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 2rem;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 3rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .lightbox-prev {
+        left: 0.5rem;
+    }
+
+    .lightbox-next {
+        right: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .lightbox-prev,
+        .lightbox-next {
+            font-size: 2.2rem;
+            padding: 0.5rem;
+        }
+    }
 </style>
+
+<script>
+    function initLightbox() {
+        const triggers = Array.from(document.querySelectorAll(".lightbox-img"));
+        if (!triggers.length) return;
+
+        // De-duplicate by filename. Ticker copies only carry src/alt;
+        // if the same photo also appears in the main gallery, its
+        // richer EXIF data upgrades the entry.
+        const photoMap = new Map();
+        triggers.forEach((img) => {
+            const key = img.dataset.lightboxKey;
+            if (!key) return;
+            const isGalleryImg = img.classList.contains("main-photo");
+
+            const fullResSrc = img.dataset.fullSrc || img.currentSrc || img.src;
+
+            let entry = photoMap.get(key);
+            if (!entry) {
+                entry = { src: fullResSrc, alt: img.alt };
+                photoMap.set(key, entry);
+            }
+            if (isGalleryImg) {
+                Object.assign(entry, {
+                    src: fullResSrc,
+                    title: img.dataset.title,
+                    location: img.dataset.location,
+                    date: img.dataset.date,
+                    camera: img.dataset.camera,
+                    lens: img.dataset.lens,
+                    focalLength: img.dataset.focalLength,
+                    aperture: img.dataset.aperture,
+                    shutter: img.dataset.shutter,
+                    iso: img.dataset.iso,
+                    notes: img.dataset.notes,
+                });
+            }
+        });
+
+        const photos = Array.from(photoMap.entries());
+        const keyToIndex = new Map(photos.map(([key], i) => [key, i]));
+
+        const overlay = document.getElementById("lightbox-overlay");
+        const imageEl = document.getElementById("lightbox-image");
+        const captionEl = document.getElementById("lightbox-caption");
+        const titleEl = document.getElementById("lightbox-title");
+        const locationEl = document.getElementById("lightbox-location");
+        const exifEl = document.getElementById("lightbox-exif");
+        const notesEl = document.getElementById("lightbox-notes");
+        const closeBtn = document.getElementById("lightbox-close");
+        const prevBtn = document.getElementById("lightbox-prev");
+        const nextBtn = document.getElementById("lightbox-next");
+
+        if (!overlay || !imageEl) return;
+
+        let currentIndex = 0;
+        let lastFocused = null;
+
+        function setField(el, value) {
+            if (value) {
+                el.textContent = value;
+                el.hidden = false;
+            } else {
+                el.hidden = true;
+            }
+        }
+
+        let activeLoadId = 0;
+
+        function render(index) {
+            const [, photo] = photos[index];
+            currentIndex = index;
+
+            // 1. Instantly hide the old image to stop showing stale pixels
+            imageEl.classList.add("is-loading");
+
+            // 2. Preload high-res target image in memory
+            const currentLoadId = ++activeLoadId;
+            const imgLoader = new Image();
+            imgLoader.src = photo.src;
+
+            imgLoader.onload = () => {
+                // Prevent stale image renders if user rapidly clicked Next/Prev
+                if (currentLoadId !== activeLoadId) return;
+
+                imageEl.src = photo.src;
+                imageEl.alt = photo.title || photo.alt || "";
+                imageEl.classList.remove("is-loading");
+            };
+
+            imgLoader.onerror = () => {
+                if (currentLoadId !== activeLoadId) return;
+                imageEl.src = photo.src;
+                imageEl.classList.remove("is-loading");
+            };
+
+            // 3. Update text captions instantly
+            titleEl.textContent = photo.title || "";
+            setField(locationEl, photo.location);
+            const exif = [
+                photo.camera,
+                photo.lens,
+                photo.focalLength,
+                photo.aperture,
+                photo.shutter,
+                photo.iso,
+            ]
+                .filter(Boolean)
+                .join(" · ");
+            setField(exifEl, exif);
+            setField(notesEl, photo.notes);
+            captionEl.hidden = !photo.title;
+        }
+
+        function open(index, triggerEl) {
+            lastFocused = triggerEl;
+            render(index);
+            overlay.classList.add("open");
+            document.body.style.overflow = "hidden";
+            closeBtn?.focus();
+        }
+
+        function close() {
+            overlay.classList.remove("open");
+            document.body.style.overflow = "";
+
+            imageEl.src = "";
+            imageEl.classList.add("is-loading");
+
+            lastFocused?.focus();
+        }
+
+        function next() {
+            render((currentIndex + 1) % photos.length);
+        }
+
+        function prev() {
+            render((currentIndex - 1 + photos.length) % photos.length);
+        }
+
+        closeBtn?.addEventListener("click", close);
+        prevBtn?.addEventListener("click", prev);
+        nextBtn?.addEventListener("click", next);
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) close();
+        });
+
+        document.addEventListener("click", (e) => {
+            const trigger = e.target.closest(".lightbox-img");
+            if (!trigger) return;
+            const index = keyToIndex.get(trigger.dataset.lightboxKey);
+            if (index !== undefined) open(index, trigger);
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (overlay.classList.contains("open")) {
+                if (e.key === "Escape") close();
+                else if (e.key === "ArrowRight") next();
+                else if (e.key === "ArrowLeft") prev();
+                else if (e.key === "Tab") {
+                    const focusable = [prevBtn, nextBtn, closeBtn].filter(
+                        Boolean,
+                    );
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                }
+                return;
+            }
+            const trigger = e.target.closest(".lightbox-img");
+            if (trigger && (e.key === "Enter" || e.key === " ")) {
+                e.preventDefault();
+                const index = keyToIndex.get(trigger.dataset.lightboxKey);
+                if (index !== undefined) open(index, trigger);
+            }
+        });
+    }
+
+    initLightbox();
+    document.addEventListener("astro:after-swap", initLightbox);
+</script>
