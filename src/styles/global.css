@@ -1,0 +1,96 @@
+@font-face {
+    font-family: 'CustomSans';
+    src: url('/fonts/Comfortaa-Regular.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'CustomSans';
+    src: url('/fonts/Comfortaa-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'CustomSans';
+    src: url('/fonts/Comfortaa-Light.ttf') format('truetype');
+    font-weight: light;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Bold.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Extrabold.ttf') format('truetype');
+    font-weight: bolder;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Extralight.ttf') format('truetype');
+    font-weight: lighter;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Extralihtitalic.ttf') format('truetype');
+    font-weight: lighter;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Light.ttf') format('truetype');
+    font-weight: light;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-Regular.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-SC-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: cursive;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-SC-Extrabold.ttf') format('truetype');
+    font-weight: bolder;
+    font-style: cursive;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-SC-Extralight.ttf') format('truetype');
+    font-weight: lighter;
+    font-style: cursive;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-SC-Light.ttf') format('truetype');
+    font-weight: light;
+    font-style: cursive;
+}
+
+@font-face {
+    font-family: 'CustomSerif';
+    src: url('/fonts/Neuton-SC-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: cursive;
+}

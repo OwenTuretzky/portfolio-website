@@ -1,11 +1,40 @@
 ---
 import BaseLayout from '../layouts/baseLayout.astro';
+import '../styles/global.css';
 ---
 <BaseLayout
     title="Projects | Owen Turetzky"
 	description="My Computer Science Projects."
 >
-
-    <h1>Computer Science</h1>
-    <p>This page is still being worked on, check out my github for now</p>
+    <div class="main-container">
+        <h1>Computer Science</h1>
+        <p>This page is still being worked on, check out my <a href="https://github.com/OwenTuretzky" target="_blank" rel="noopener noreferrer">github</a> for now</p>
+    </div>
+    
 </BaseLayout>
+
+<style>
+
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 5rem;
+    }
+
+    h1 {
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 2.5rem;
+    }
+
+    p {
+        font-family: CustomSans;
+        color: #888;
+    }
+
+    a {
+        color: #888;
+    }
+
+</style>

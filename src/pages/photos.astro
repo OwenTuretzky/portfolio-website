@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/baseLayout.astro";
+import '../styles/global.css';
 import { Image } from "astro:assets";
 import { galleryPhotos } from "../data/photos";
 
@@ -142,7 +143,9 @@ const detailedGallery = galleryPhotos.map((meta) => {
 <style>
     .page-header {
         text-align: center;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 2rem;
         padding: 2rem 1rem;
     }
 
@@ -239,21 +242,22 @@ const detailedGallery = galleryPhotos.map((meta) => {
 
     .info-header h2 {
         font-size: 1.8rem;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
         margin: 0 0 0.25rem 0;
-        font-weight: 500;
+        font-weight: bold;
         letter-spacing: -0.02em;
     }
 
     .location {
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
         color: #888;
         font-size: 0.95rem;
         margin: 0;
     }
 
     .date {
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
+        font-weight: bold;
         color: #555;
         font-size: 0.85rem;
         margin: 0.2rem 0 0 0;
@@ -275,7 +279,8 @@ const detailedGallery = galleryPhotos.map((meta) => {
     }
 
     .exif-item .label {
-        font-size: 0.75rem;
+        font-family: CustomSerif;
+        font-size: 1rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         color: #666;
@@ -288,7 +293,9 @@ const detailedGallery = galleryPhotos.map((meta) => {
     }
 
     .notes {
-        font-size: 0.95rem;
+        font-family: CustomSerif;
+        font-weight: light;
+        font-size: 1rem;
         line-height: 1.6;
         color: #aaa;
         border-left: 2px solid #333;

@@ -1,5 +1,6 @@
 ---
 const currentYear = new Date().getFullYear();
+import '../styles/global.css';
 ---
 <footer class="site-footer">
     <div class="footer-container">
@@ -46,7 +47,7 @@ const currentYear = new Date().getFullYear();
 
     .site-footer p{
         color: white;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
     }
 
     .footer-links {
@@ -58,7 +59,7 @@ const currentYear = new Date().getFullYear();
         color: #ffffff;
         text-decoration: none;
         transition: color 0.2s ease;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
     }
 
     .footer-links a:hover {
@@ -66,7 +67,7 @@ const currentYear = new Date().getFullYear();
     }
 
     .back-to-top-btn {
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        font-family: CustomSans;
         font-size: inherit;
         color: #ffffff;
         text-decoration: none;
