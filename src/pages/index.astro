@@ -64,15 +64,17 @@ const photoSrcs = await Promise.all(
 		display: grid;
 		grid-template-columns: max-content 450px max-content;
 		justify-content: space-evenly;
-		align-items: top center;
+		align-items: start;
 		max-width: 100%;
 		margin: 0 auto;
 		padding-top: 2rem;
 		padding-bottom: 1rem;
+		overflow-x: hidden;
 	}
 
 	.profile-center {
-		width: 450px;
+		width: 100%;
+		max-width: 450px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -80,8 +82,9 @@ const photoSrcs = await Promise.all(
 	}
 
 	.avatar {
-		width: 320px;
-		height: 320px;
+		width: 100%;
+		max-width: 320px;
+		aspect-ratio: 1 / 1;
 		border-radius: 50%;
 		object-fit: cover;
 		margin-top: 5rem;
@@ -111,7 +114,9 @@ const photoSrcs = await Promise.all(
 		flex-direction: column;
 		align-items: center;
 		text-align: center;
-		width: 400px;
+		width: 100%;
+		height: 100%;
+		max-width: 400px;
 		transition: transform 0.15s ease-out;
 	}
 
@@ -155,17 +160,27 @@ const photoSrcs = await Promise.all(
 		transition: transform 0.3s ease;
 	}
 
-	@media (max-width: 800px) {
+	@media (max-width: 1100px) {
 		.main-container {
 			grid-template-columns: 1fr;
 			justify-items: center;
 			gap: 1.5rem;
+			padding: 0 1rem;
 		}
 
 		.profile-center {
 			order: -1;
 			margin-bottom: 2rem;
 		}
+
+		.profile-center h1 {
+            font-size: 2.5rem;
+        }
+
+		.avatar {
+            max-width: 240px;
+            margin-top: 2rem;
+        }
 
 		.widget {
             width: 100%;
