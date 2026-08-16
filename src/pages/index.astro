@@ -1,10 +1,17 @@
 ---
 import BaseLayout from "../layouts/baseLayout.astro";
-import { getImage } from "astro:assets";
-import '../styles/global.css';
+import { Image, getImage } from "astro:assets";
+import { projects } from "../data/projects";
+
+import "../styles/global.css";
 
 const photoModules = import.meta.glob<{ default: ImageMetadata }>(
 	"../assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
+	{ eager: true },
+);
+
+const projectImages = import.meta.glob<{ default: ImageMetadata }>(
+	"../assets/projects/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
 	{ eager: true },
 );
 
@@ -14,6 +21,11 @@ const photoSrcs = await Promise.all(
 		return optimized.src;
 	}),
 );
+
+const featured = projects.find((p) => p.featured) ?? projects[0];
+const featuredImg = Object.entries(projectImages).find(([path]) =>
+	path.endsWith(featured.image),
+)?.[1]?.default;
 ---
 
 <BaseLayout
@@ -21,8 +33,20 @@ const photoSrcs = await Promise.all(
 	description="Computer Science Student and Amateur Photographer."
 >
 	<div class="main-container">
-		<a href="/projects" class="widget">
+		<a href={`/projects#${featured.slug}`} class="widget">
 			<h2>Projects</h2>
+			<div class="widget-image-container">
+				{
+					featuredImg && (
+						<Image
+							src={featuredImg}
+							alt={featured.title}
+							width={600}
+							class="widget-preview-img"
+						/>
+					)
+				}
+			</div>
 			<p>Click here to see my computer science projects</p>
 		</a>
 
@@ -57,7 +81,6 @@ const photoSrcs = await Promise.all(
 			imgElement.src = photoSrcs[randomIndex];
 		}
 	}
-
 </script>
 
 <style>
@@ -101,10 +124,10 @@ const photoSrcs = await Promise.all(
 	}
 
 	.micro-bio {
-		font-family: CustomSans ;
+		font-family: CustomSans;
 		font-weight: bold;
 		font-size: 1rem;
-		color: #888
+		color: #888;
 	}
 
 	.widget {
@@ -146,11 +169,11 @@ const photoSrcs = await Promise.all(
 		height: auto;
 		display: flex;
 		align-items: center;
-  		justify-content: center;
+		justify-content: center;
 		overflow: hidden;
 		padding: 5%;
 		margin-bottom: 1rem;
-		background-color: #272727;		
+		background-color: #272727;
 	}
 
 	.widget-preview-img {
@@ -174,17 +197,17 @@ const photoSrcs = await Promise.all(
 		}
 
 		.profile-center h1 {
-            font-size: 2.5rem;
-        }
+			font-size: 2.5rem;
+		}
 
 		.avatar {
-            max-width: 240px;
-            margin-top: 2rem;
-        }
+			max-width: 240px;
+			margin-top: 2rem;
+		}
 
 		.widget {
-            width: 100%;
-            max-width: 300px;
-        }
+			width: 100%;
+			max-width: 300px;
+		}
 	}
 </style>

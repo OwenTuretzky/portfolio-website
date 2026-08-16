@@ -1,52 +1,208 @@
 ---
-import BaseLayout from '../layouts/baseLayout.astro';
-import '../styles/global.css';
+import BaseLayout from "../layouts/baseLayout.astro";
+import { Image } from "astro:assets";
+import { projects } from "../data/projects";
+import "../styles/global.css";
+
+const projectImages = import.meta.glob<{ default: ImageMetadata }>(
+    "../assets/projects/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
+    { eager: true },
+);
+
+const withImages = projects.map((project) => {
+    const match = Object.entries(projectImages).find(([path]) =>
+        path.endsWith(project.image),
+    );
+    return { ...project, imgSrc: match?.[1]?.default };
+});
 ---
+
 <BaseLayout
     title="Projects | Owen Turetzky"
-	description="My Computer Science Projects."
+    description="My Computer Science Projects."
 >
-    <div class="main-container">
-        <h1>Computer Science</h1>
-        <p>This page is still being worked on, check out my <a href="https://github.com/OwenTuretzky" target="_blank" rel="noopener noreferrer">github</a> for now</p>
-    </div>
-    
+    <header class="page-header">
+        <h1>My Projects</h1>
+    </header>
+
+    <section class="projects-grid">
+        {
+            withImages.map((project) => (
+                <article id={project.slug} class="project-card">
+                    <div class="project-image-container">
+                        {project.imgSrc && (
+                            <Image
+                                src={project.imgSrc}
+                                alt={`Screenshot of ${project.title}`}
+                                width={700}
+                                quality="high"
+                                class="project-image"
+                            />
+                        )}
+                    </div>
+
+                    <div class="project-body">
+                        <h2>{project.title}</h2>
+
+                        {project.tags?.length > 0 && (
+                            <ul class="tag-list">
+                                {project.tags.map((tag) => (
+                                    <li class="tag">{tag}</li>
+                                ))}
+                            </ul>
+                        )}
+
+                        <p class="description">{project.description}</p>
+
+                        <div class="project-links">
+                            <a
+                                href={project.repoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                GitHub{" "}
+                                <span class="sr-only">(opens in new tab)</span>
+                            </a>
+                            {project.liveUrl && (
+                                <a
+                                    href={project.liveUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Live Demo{" "}
+                                    <span class="sr-only">
+                                        (opens in new tab)
+                                    </span>
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                </article>
+            ))
+        }
+    </section>
 </BaseLayout>
 
 <style>
-
-    .main-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-top: 2rem;
-    }
-
-    h1 {
+    .page-header {
+        text-align: center;
         font-family: CustomSans;
         font-weight: bold;
-        font-size: 4rem;
-    }
-
-    p {
-        font-family: CustomSans;
         font-size: 2rem;
+        padding: 2rem 1rem;
+    }
+
+    .projects-grid {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+        gap: 3rem;
+    }
+
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        scroll-margin-top: 5rem;
+    }
+
+    .project-image-container {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background-color: #272727;
+        padding: 5%;
+        box-sizing: border-box;
+        transition: transform 0.3s ease;
+    }
+
+    .project-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    .project-card:hover .project-image-container {
+        transform: scale(1.04);
+    }
+
+    .project-body {
+        padding-top: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .project-body h2 {
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 1.4rem;
+        margin: 0;
+    }
+
+    .tag-list {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .tag {
+        font-family: monospace;
+        font-size: 0.75rem;
         color: #888;
+        border: 1px solid #444;
+        border-radius: 999px;
+        padding: 0.15rem 0.7rem;
     }
 
-    a {
-        color: #888;
+    .description {
+        font-family: CustomSerif;
+        font-weight: lighter;
+        font-size: 1.3rem;
+        color: #aaa;
+        line-height: 1.5;
+        margin: 0;
     }
 
-    @media (max-width: 1100px) {
-        h1 {
-            font-size: 2.5rem;
+    .project-links {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 0.25rem;
+    }
+
+    .project-links a {
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 0.9rem;
+        color: #272727;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.2s ease;
+    }
+
+    .project-links a:hover,
+    .project-links a:focus-visible {
+        border-color: #272727;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+        .projects-grid {
+            gap: 2rem;
+            padding: 1.5rem 1.25rem 3rem;
         }
-
-        p {
-            padding: 1rem;
-            font-size: 1.5rem;
-        }
     }
-
 </style>
