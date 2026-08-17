@@ -1,0 +1,156 @@
+---
+import BaseLayout from "../layouts/baseLayout.astro";
+import "../styles/global.css";
+
+const socialLinks = [
+    { label: "GitHub", href: "https://github.com/OwenTuretzky" },
+    { label: "LinkedIn",href: "https://www.linkedin.com/in/owen-turetzky-6681a3385/"},
+    { label: "Instagram", href: "https://www.instagram.com/owenturetzky" },
+];
+---
+
+<BaseLayout
+    title="About | Owen Turetzky"
+    description="A bit about who I am and what I like to do."
+>
+    <header class="page-header">
+        <h1>About</h1>
+    </header>
+
+    <section class="about-section">
+        <div class="about-top">
+            <div class="portrait-col">
+                <img
+                    src="/portrait.jpg"
+                    alt="Portrait of Owen Turetzky"
+                    class="about-portrait"
+                />
+            </div>
+
+            <div class="bio-col">
+                <h2>Owen Turetzky</h2>
+                <p class="bio-text">Hello! My name is Owen, and I'm a Computer Science and Japanese major currently studying at the University of Puget Sound.</p>
+                <p class="bio-text">I'm passionate about all things computer science, but my main interests are in machine learning, NLP/computational linguistics, and graphics.</p>
+                <p class="bio-text">Check out my <a href="https://github.com/OwenTuretzky">GitHub</a> or <a href="/projects">projects page</a> to see some things I've made. </p>
+                <p class="bio-text">I've studied Japanese for 4 years and travelled to Japan twice; once to study abroad in Kyoto and once on a 5-week research trip.</p>
+                <p class="bio-text">In my free time, I enjoy stargazing and have been an amateur astrophotographer since late 2020.</p> 
+                <p class="bio-text">Recently, I've started to do some conventional photography as well. Feel free to check out my <a href="https://www.instagram.com/owenturetzky">Instagram</a> or <a href="/photos">photos page</a> to see more!</p>
+            </div>
+
+            <div class="links-col">
+                {
+                    socialLinks.map((link) => (
+                        <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="link-pill"
+                        >
+                            {link.label}
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+</BaseLayout>
+
+<style>
+    .page-header {
+        text-align: center;
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 2rem;
+        padding: 2rem 1rem;
+    }
+
+    .about-section {
+        padding: 1rem 5rem 4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .about-top {
+        display: grid;
+        grid-template-columns: minmax(220px, 320px) 1fr 10rem;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .portrait-col {
+        display: flex;
+        justify-content: center;
+    }
+
+    .about-portrait {
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border: 4px solid #272727;
+    }
+
+    .bio-col h2 {
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 2rem;
+        margin: 0 0 1rem 0;
+    }
+
+    .bio-text {
+        font-family: CustomSans;
+        font-size: 1.1rem;
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .links-col {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .link-pill {
+        position: relative;
+        text-align: center;
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 0.95rem;
+        color: #fff;
+        background-color: darkslateblue;
+        text-decoration: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 999px;
+        transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .link-pill:hover,
+    .link-pill:focus-visible {
+        background-color: #584e9b;
+    }
+
+    @media (max-width: 700px) {
+        .about-top {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .about-section {
+            padding: 1rem;
+        }
+
+        .bio-text {
+            font-size: 1.1rem;
+        }
+
+        .links-col {
+            flex-direction:row;
+        }
+    }    
+</style>
