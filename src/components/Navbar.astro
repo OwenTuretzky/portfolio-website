@@ -45,9 +45,10 @@ import "../styles/global.css";
     .navbar {
         width: 100%;
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         gap: 2rem;
-        padding: max(0.8rem, env(safe-area-inset-top)) 0 1.2rem;
+        padding: max(0.8rem, env(safe-area-inset-top)) 0.5rem 1.2rem;
         background-color: darkslateblue;
         box-sizing: border-box;
         transition: transform 0.3s ease-in-out;
@@ -86,11 +87,15 @@ import "../styles/global.css";
         });
         observer.observe(sentinel);
 
-        window.addEventListener("scroll", () => {
-            const y = window.scrollY;
-            if (stuck) navbar.classList.toggle("hidden", y > lastScrollY);
-            lastScrollY = y;
-        }, { passive: true });
+        window.addEventListener(
+            "scroll",
+            () => {
+                const y = window.scrollY;
+                if (stuck) navbar.classList.toggle("hidden", y > lastScrollY);
+                lastScrollY = y;
+            },
+            { passive: true },
+        );
 
         window.addEventListener("mousemove", (e) => {
             if (stuck && e.clientY < 60) navbar.classList.remove("hidden");
