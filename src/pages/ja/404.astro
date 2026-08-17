@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../../layouts/baseLayout.astro";
+import '../../styles/global.css';
+---
+
+<BaseLayout title="404: ページが見つかりません | Owen Turetzky">
+    <main class="error-container">
+        <h1>404</h1>
+        <h2>ページが見つかりません</h2>
+        <p>お探しのページが存在しない</p>
+        <a href="/ja/" class="home-button">トップページへ</a>
+    </main>
+</BaseLayout>
+
+<style>
+    .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 60vh;
+        padding: 2rem;
+        padding-top: 0rem;
+    }
+
+    h1 {
+        font-size: 8rem;
+        font-family: CustomSerif;
+        font-weight: bolder;
+        margin: 0;
+        color: darkslateblue;
+    }
+
+    h2 {
+        font-family: CustomSerif;
+        font-style: cursive;
+        font-weight: bold;
+        font-size: 2.5rem;
+        margin-top: 0.5rem;
+    }
+
+    p {
+        font-family: CustomSans;
+        font-weight: normal;
+        font-size: 1.8rem;
+    }
+
+    .home-button {
+        font-family: CustomSans;
+        font-weight: bold;
+        padding: 0.8rem 1.5rem;
+        background: darkslateblue;
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.2s ease;
+    }
+
+    .home-button:hover {
+        background: #584e9b;
+    }
+
+</style>

@@ -1,18 +1,48 @@
 ---
 import "../styles/global.css";
+import LanguagePicker from "./LanguagePicker.astro";
+
+const locale = Astro.currentLocale || "en";
+
+const navItems = {
+  en: [
+    { label: "Home", path: "/" },
+    { label: "Projects", path: "/projects" },
+    { label: "Photography", path: "/photos" },
+    { label: "About", path: "/about" },
+  ],
+  ja: [
+    { label: "ホーム", path: "/" },
+    { label: "プロジェクト", path: "/projects" },
+    { label: "写真", path: "/photos" },
+    { label: "自己紹介", path: "/about" },
+  ],
+};
+
+const links = navItems[locale as keyof typeof navItems] || navItems.en;
+
+function getLocalizedUrl(path: string) {
+  // Return standard path for default language ('en')
+  if (locale === "en") return path;
+  
+  // Format '/ja' + path (handling root '/' correctly)
+  return path === "/" ? `/${locale}` : `/${locale}${path}`;
+}
 ---
 
 <header id="site-header" class="site-header">
     <div class="site-name">Owen Turetzky</div>
+    <div class="language-picker-wrapper">
+        <LanguagePicker></LanguagePicker>
+    </div>
 </header>
 
 <div id="nav-sentinel"></div>
 <div id="nav-wrapper" class="nav-wrapper">
     <nav id="navbar" class="navbar">
-        <a href="/">Home</a>
-        <a href="/projects">Projects</a>
-        <a href="/photos">Photography</a>
-        <a href="/about">About</a>
+        {links.map((link) => (
+            <a href={getLocalizedUrl(link.path)}>{link.label}</a>
+        ))}
     </nav>
 </div>
 
@@ -20,15 +50,23 @@ import "../styles/global.css";
     .site-header {
         display: flex;
         justify-content: center;
-        padding: 2.5rem 0 3.5rem;
+        padding: 2.5rem 1rem 3.5rem;
         background-color: darkslateblue;
     }
 
     .site-name {
+        padding-top: 0.5rem;
         font-size: 2.2rem;
         font-family: CustomSans, sans-serif;
         font-weight: bold;
         color: #fff;
+    }
+
+    .language-picker-wrapper {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        z-index: 10;
     }
 
     #nav-sentinel {

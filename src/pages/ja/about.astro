@@ -1,0 +1,156 @@
+---
+import BaseLayout from "../../layouts/baseLayout.astro";
+import "../../styles/global.css";
+
+const socialLinks = [
+    { label: "GitHub", href: "https://github.com/OwenTuretzky" },
+    { label: "LinkedIn",href: "https://www.linkedin.com/in/owen-turetzky-6681a3385/"},
+    { label: "インスタ", href: "https://www.instagram.com/owenturetzky" },
+];
+---
+
+<BaseLayout
+    title="自己紹介 | Owen Turetzky"
+    description="私の自己紹介ページ"
+>
+    <header class="page-header">
+        <h1>自己紹介</h1>
+    </header>
+
+    <section class="about-section">
+        <div class="about-top">
+            <div class="portrait-col">
+                <img
+                    src="/portrait.jpg"
+                    alt="Owen Turetzkyのプロフィール写真"
+                    class="about-portrait"
+                />
+            </div>
+
+            <div class="bio-col">
+                <h2>Owen Turetzky</h2>
+                <p class="bio-text">こんにちは! オーウェンツレツキ(Owen Turetzky)です。ピュージェットサウンド大学でコンピューターサイエンスと日本語を専攻しています</p>
+                <p class="bio-text">コンピューターサイエンス全般に興味がありますが主な関心は機械学習や自然言語処理（計算言語学）やグラフィックスです</p>
+                <p class="bio-text"><a href="https://github.com/OwenTuretzky">GitHub</a>や<a href="/ja/projects">プロジェクトページ</a>を見てください</p>
+                <p class="bio-text">日本語は4年間勉強して、日本に2回行きました。1回目は京都への留学で、2回目は5週間の研究旅行でした</p>
+                <p class="bio-text">趣味は天体観測で 、2020年からアマチュア天体写真をやっています</p> 
+                <p class="bio-text">最近、普通の写真を始めました。<a href="https://www.instagram.com/owenturetzky">インスタ</a>や<a href="/ja/photos">写真ページ</a>を見てください！</p>
+            </div>
+
+            <div class="links-col">
+                {
+                    socialLinks.map((link) => (
+                        <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="link-pill"
+                        >
+                            {link.label}
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+</BaseLayout>
+
+<style>
+    .page-header {
+        text-align: center;
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 2rem;
+        padding: 2rem 1rem;
+    }
+
+    .about-section {
+        padding: 1rem 5rem 4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .about-top {
+        display: grid;
+        grid-template-columns: minmax(220px, 320px) 1fr 10rem;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .portrait-col {
+        display: flex;
+        justify-content: center;
+    }
+
+    .about-portrait {
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border: 4px solid #272727;
+    }
+
+    .bio-col h2 {
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 2rem;
+        margin: 0 0 1rem 0;
+    }
+
+    .bio-text {
+        font-family: CustomSans;
+        font-size: 1.1rem;
+        color: #444;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .links-col {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .link-pill {
+        position: relative;
+        text-align: center;
+        font-family: CustomSans;
+        font-weight: bold;
+        font-size: 0.95rem;
+        color: #fff;
+        background-color: darkslateblue;
+        text-decoration: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 999px;
+        transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .link-pill:hover,
+    .link-pill:focus-visible {
+        background-color: #584e9b;
+    }
+
+    @media (max-width: 700px) {
+        .about-top {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .about-section {
+            padding: 1rem;
+        }
+
+        .bio-text {
+            font-size: 1.1rem;
+        }
+
+        .links-col {
+            flex-direction:row;
+        }
+    }    
+</style>

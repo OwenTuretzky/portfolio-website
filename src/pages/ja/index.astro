@@ -1,0 +1,215 @@
+---
+import BaseLayout from "../../layouts/baseLayout.astro";
+import { Image, getImage } from "astro:assets";
+import { projects } from "../../data/projects";
+
+import "../../styles/global.css";
+
+const photoModules = import.meta.glob<{ default: ImageMetadata }>(
+	"../../assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
+	{ eager: true },
+);
+
+const projectImages = import.meta.glob<{ default: ImageMetadata }>(
+	"../../assets/projects/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
+	{ eager: true },
+);
+
+const photoSrcs = await Promise.all(
+	Object.values(photoModules).map(async (mod) => {
+		const optimized = await getImage({ src: mod.default, width: 600 });
+		return optimized.src;
+	}),
+);
+
+const featured = projects.find((p) => p.featured) ?? projects[0];
+const featuredImg = Object.entries(projectImages).find(([path]) =>
+	path.endsWith(featured.image),
+)?.[1]?.default;
+---
+
+<BaseLayout
+	title="ホーム | Owen Turetzky"
+	description="コンピューターと日本語の大学生とアマチュア写真家"
+>
+	<div class="main-container">
+		<a href={`/ja/projects#${featured.slug}`} class="widget">
+			<h2>プロジェクト</h2>
+			<div class="widget-image-container">
+				{
+					featuredImg && (
+						<Image
+							src={featuredImg}
+							alt={featured.title}
+							width={600}
+							class="widget-preview-img"
+						/>
+					)
+				}
+			</div>
+			<p>こちらへ私のプロジェクトをみえます</p>
+		</a>
+
+		<div class="profile-center">
+			<a href="/ja/about" class="portrait-widget">
+				<img src="/portrait.jpg" alt="My Portrait" class="avatar" />
+			</a>
+			<h1>Owen Turetzky</h1>
+			<p class="micro-bio">
+				コンピュータ科学者とアマチュア写真家
+			</p>
+		</div>
+
+		<a href="/ja/photos" class="widget">
+			<h2>写真ギャラリー</h2>
+			<div class="widget-image-container">
+				<img
+					id="random-photo"
+					src=""
+					alt="Featured photograph preview"
+					class="widget-preview-img"
+				/>
+			</div>
+			<p>こちらへ私の写真ギャラリー</p>
+		</a>
+	</div>
+</BaseLayout>
+
+<script define:vars={{ photoSrcs }}>
+	if (photoSrcs && photoSrcs.length > 0) {
+		const randomIndex = Math.floor(Math.random() * photoSrcs.length);
+		const imgElement = document.getElementById("random-photo");
+		if (imgElement) {
+			imgElement.src = photoSrcs[randomIndex];
+		}
+	}
+</script>
+
+<style>
+	.main-container {
+		display: grid;
+		grid-template-columns: max-content 450px max-content;
+		justify-content: space-evenly;
+		align-items: start;
+		max-width: 100%;
+		margin: 0 auto;
+		padding-top: 2rem;
+		padding-bottom: 1rem;
+		overflow-x: hidden;
+	}
+
+	.profile-center {
+		width: 100%;
+		max-width: 450px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.avatar {
+		width: 100%;
+		max-width: 320px;
+		aspect-ratio: 1 / 1;
+		border-radius: 50%;
+		object-fit: cover;
+		margin-top: 5rem;
+		margin-bottom: 0.5rem;
+		border: 4px solid #272727;
+	}
+
+	.profile-center h1 {
+		font-family: CustomSans;
+		font-weight: bold;
+		font-size: 3.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.micro-bio {
+		font-family: CustomSans;
+		font-weight: bold;
+		font-size: 1rem;
+		color: #888;
+	}
+
+	.widget {
+		text-decoration: none;
+		text-align: center;
+		border-radius: 8px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		width: 100%;
+		height: 100%;
+		max-width: 400px;
+		transition: transform 0.15s ease-out;
+	}
+
+	.widget:hover {
+		background: #c9c9c9;
+		transform: translateY(-4px);
+	}
+
+	.widget h2 {
+		font-size: 2rem;
+		font-family: CustomSans;
+		margin-bottom: 1rem;
+		color: #272727;
+	}
+
+	.widget p {
+		margin: 0;
+		font-family: CustomSans;
+		color: #888;
+		line-height: 1.4;
+		padding-bottom: 1rem;
+	}
+
+	.widget-image-container {
+		width: 85%;
+		height: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		padding: 5%;
+		margin-bottom: 1rem;
+		background-color: #272727;
+	}
+
+	.widget-preview-img {
+		width: 100%;
+		height: auto;
+		object-fit: cover;
+		object-position: center;
+	}
+
+	@media (max-width: 1100px) {
+		.main-container {
+			grid-template-columns: 1fr;
+			justify-items: center;
+			gap: 1.5rem;
+			padding: 0 1rem;
+		}
+
+		.profile-center {
+			order: -1;
+			margin-bottom: 2rem;
+		}
+
+		.profile-center h1 {
+			font-size: 2.5rem;
+		}
+
+		.avatar {
+			max-width: 240px;
+			margin-top: 2rem;
+		}
+
+		.widget {
+			width: 100%;
+			max-width: 300px;
+		}
+	}
+</style>

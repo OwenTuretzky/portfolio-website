@@ -1,0 +1,54 @@
+---
+const { pathname } = Astro.url;
+
+// Check if current route starts with /ja
+const isJapanese = pathname.startsWith("/ja");
+
+// Swap the path: add or remove /ja prefix
+const targetPath = isJapanese
+    ? pathname.replace(/^\/ja/, "") || "/"
+    : `/ja${pathname}`;
+---
+
+<a href={targetPath} class="lang-toggle" aria-label={isJapanese ? "Switch to English" : "Switch to Japanese"}>
+    <span class="label-full">{isJapanese ? "English" : "日本語"}</span>
+    <span class="label-short">{isJapanese ? "EN" : "日本語"}</span>
+</a>
+
+<style>
+    .lang-toggle {
+        font-family: CustomSans;
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: white;
+        text-decoration: none;
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    .lang-toggle:hover {
+        border-color: #c9c9c9;
+        color: #c9c9c9;
+    }
+
+    .label-full {
+        display: none;
+    }
+
+    .label-short {
+        display: inline;
+    }
+
+    /* Desktop View (640px and wider): Show full label */
+    @media (min-width: 640px) {
+        .label-full {
+            display: inline;
+        }
+
+        .label-short {
+            display: none;
+        }
+    }
+
+</style>

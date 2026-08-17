@@ -1,11 +1,11 @@
 ---
-import BaseLayout from "../layouts/baseLayout.astro";
+import BaseLayout from "../../layouts/baseLayout.astro";
 import { Image } from "astro:assets";
-import { projects } from "../data/projects";
-import "../styles/global.css";
+import { projects } from "../../data/projects";
+import "../../styles/global.css";
 
 const projectImages = import.meta.glob<{ default: ImageMetadata }>(
-    "../assets/projects/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
+    "../../assets/projects/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}",
     { eager: true },
 );
 
@@ -18,11 +18,11 @@ const withImages = projects.map((project) => {
 ---
 
 <BaseLayout
-    title="Projects | Owen Turetzky"
-    description="My Computer Science Projects."
+    title="プロジェクト | Owen Turetzky"
+    description="私のコンピュータープロジェクト."
 >
     <header class="page-header">
-        <h1>My Projects</h1>
+        <h1>プロジェクト</h1>
     </header>
 
     <section class="projects-grid">
@@ -33,7 +33,7 @@ const withImages = projects.map((project) => {
                         {project.imgSrc && (
                             <Image
                                 src={project.imgSrc}
-                                alt={`Screenshot of ${project.title}`}
+                                alt={`${project.title_ja}のスクリーンショット`}
                                 width={700}
                                 quality="high"
                                 class="project-image"
@@ -42,17 +42,17 @@ const withImages = projects.map((project) => {
                     </div>
 
                     <div class="project-body">
-                        <h2>{project.title}</h2>
+                        <h2>{project.title_ja}</h2>
 
-                        {project.tags?.length > 0 && (
+                        {project.tags_ja?.length > 0 && (
                             <ul class="tag-list">
-                                {project.tags.map((tag) => (
+                                {project.tags_ja.map((tag) => (
                                     <li class="tag">{tag}</li>
                                 ))}
                             </ul>
                         )}
 
-                        <p class="description">{project.description}</p>
+                        <p class="description">{project.description_ja}</p>
 
                         <div class="project-links">
                             <a
@@ -68,7 +68,7 @@ const withImages = projects.map((project) => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    Live Demo{" "}
+                                    デモを見る{" "}
                                 </a>
                             )}
                         </div>

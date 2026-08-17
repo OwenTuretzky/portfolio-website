@@ -7,4 +7,11 @@ export default defineConfig({
     site: 'https://owen.turetzky.org',
     prefetch: true,
     integrations: [sitemap()],
+    i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'ja'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });
