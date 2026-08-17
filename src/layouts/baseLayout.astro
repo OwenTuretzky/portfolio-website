@@ -1,12 +1,28 @@
 ---
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+
+const locale = Astro.currentLocale || "en";
+const isJapanese = locale === "ja";
+
+const defaultTitle = isJapanese ? "ポートフォリオ | Owen Turetzky" : "Portfolio | Owen Turetzky";
+const defaultDescription = isJapanese
+    ? "コンピュータ科学者とアマチュア写真家"
+    : "Computer Science Student and Amateur Photographer";
+
+
 const {
-    title = "My Portfolio",
-    description = "Computer Science Student and Amateur Photographer",
+    title = defaultTitle,
+    description = defaultDescription,
     image = "/portrait.jpg",
 } = Astro.props;
+
 const currentUrl = new URL(Astro.url.pathname, Astro.site);
+
+const pathname = Astro.url.pathname;
+const cleanPath = pathname.replace(/^\/ja/, "") || "/";
+const enUrl = new URL(cleanPath, Astro.site);
+const jaUrl = new URL(`/ja${cleanPath === "/" ? "" : cleanPath}`, Astro.site);
 
 const structuredData = {
     "@context": "https://schema.org",
@@ -30,7 +46,7 @@ const structuredData = {
 };
 ---
 
-<html lang="en">
+<html lang={locale}>
     <head>
         <meta
             name="google-site-verification"
@@ -47,6 +63,10 @@ const structuredData = {
         <meta name="description" content={description} />
         <link rel="canonical" href={currentUrl} />
 
+        <link rel="alternate" hreflang="en" href={enUrl} />
+        <link rel="alternate" hreflang="ja" href={jaUrl} />
+        <link rel="alternate" hreflang="x-default" href={enUrl} />
+
         <meta property="og:type" content="website" />
         <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
@@ -55,6 +75,7 @@ const structuredData = {
         <meta property="og:image" content={new URL(image, Astro.site)} />
         <meta property="og:image:width" content="1800" />
         <meta property="og:image:height" content="1800" />
+        <meta property="og:locale" content={isJapanese ? "ja_JP" : "en_US"} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
