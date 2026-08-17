@@ -7,13 +7,40 @@ const {
     image = "/portrait.jpg",
 } = Astro.props;
 const currentUrl = new URL(Astro.url.pathname, Astro.site);
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+        "@type": "Person",
+        name: "Owen Turetzky",
+        url: "https://owen.turetzky.org",
+        image: "https://owen.turetzky.org/portrait.jpg",
+        description: "Computer Science Student and Amateur Photographer.",
+        alumniOf: {
+            "@type": "EducationalOrganization",
+            name: "University of Puget Sound",
+        },
+        sameAs: [
+            "https://github.com/OwenTuretzky",
+            "https://www.instagram.com/owenturetzky",
+            "https://www.linkedin.com/in/owen-turetzky-6681a3385/",
+        ],
+    },
+};
 ---
 
 <html lang="en">
     <head>
-        <meta name="google-site-verification" content="zXIee1sau1kDwGVytUW4p6lOEmqJNWMLitH_VAIXlUc" />
+        <meta
+            name="google-site-verification"
+            content="zXIee1sau1kDwGVytUW4p6lOEmqJNWMLitH_VAIXlUc"
+        />
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+        />
 
         <link rel="icon" type="image/png" href="/favicon.png" />
         <title>{title}</title>
@@ -23,31 +50,18 @@ const currentUrl = new URL(Astro.url.pathname, Astro.site);
         <meta property="og:type" content="website" />
         <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
+        <meta property="og:site-name" content="Owen Turetzky" />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={new URL(image, Astro.site)} />
+        <meta property="og:image:width" content="1800" />
+        <meta property="og:image:height" content="1800" />
 
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "ProfilePage",
-                "mainEntity": {
-                    "@type": "Person",
-                    "name": "Owen Turetzky",
-                    "url": "https://owen.turetzky.org",
-                    "image": "https://owen.turetzky.org/portrait.jpg",
-                    "description": "Computer Science Student and Amateur Photographer.",
-                    "alumniOf": {
-                        "@type": "EducationalOrganization",
-                        "name": "University of Puget Sound"
-                    },
-                    "sameAs": [
-                        "https://github.com/OwenTuretzky",
-                        "https://www.instagram.com/owenturetzky",
-                        "https://www.linkedin.com/in/owen-turetzky-6681a3385/"
-                    ]
-                }
-            }
-        </script>
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={new URL(image, Astro.site)} />
+
+        <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     </head>
     <body>
         <Navbar />
